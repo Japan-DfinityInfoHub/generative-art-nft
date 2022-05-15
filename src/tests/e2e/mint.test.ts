@@ -11,6 +11,7 @@ import {
   User,
   MintRequest,
   BalanceRequest,
+  TransferRequest,
   TokenIdentifier,
   _SERVICE as GenerativeArtNFT,
   idlFactory,
@@ -32,6 +33,21 @@ const identityOptionOfAlice = {
   },
 };
 const actorOfAlice = createGenerativeArtNFTActor(identityOptionOfAlice);
+const userAlice: User = {
+  principal: identityOptionOfAlice.agentOptions.identity.getPrincipal(),
+};
+
+const identityOptionOfBob = {
+  agentOptions: {
+    identity: Secp256k1KeyIdentity.generate(),
+    fetch,
+    host: 'http://localhost:8000',
+  },
+};
+const actorOfBob = createGenerativeArtNFTActor(identityOptionOfBob);
+const userBob: User = {
+  principal: identityOptionOfBob.agentOptions.identity.getPrincipal(),
+};
 
 const identityOptionOfAnonymous = {
   agentOptions: {
@@ -44,19 +60,14 @@ const actorOfAnonymous = createGenerativeArtNFTActor(identityOptionOfAnonymous);
 describe('NFT minting test', () => {
   let tokenNumberBeforeMinting: number;
 
-  const principal = identityOptionOfAlice.agentOptions.identity.getPrincipal();
-  const alice: User = {
-    principal,
-  };
-
   beforeAll(async () => {
     const tokensBeforeMinting = await actorOfAlice.getTokens();
     tokenNumberBeforeMinting = tokensBeforeMinting.length;
   });
 
-  it('Alice can mint a NFT', async () => {
+  it('Alice can mint an NFT', async () => {
     const mintRequest: MintRequest = {
-      to: alice,
+      to: userAlice,
       metadata: [],
     };
     const tokenIndex = await actorOfAlice.mintNFT(mintRequest);
@@ -70,7 +81,7 @@ describe('NFT minting test', () => {
     );
     const balanceRequest: BalanceRequest = {
       token: tid,
-      user: alice,
+      user: userAlice,
     };
     const res = await actorOfAlice.balance(balanceRequest);
     expect(res).toStrictEqual({
@@ -78,7 +89,7 @@ describe('NFT minting test', () => {
     });
   });
 
-  it('Number of tokens has been increased by 1', async () => {
+  it('The number of tokens has been increased by 1', async () => {
     const tokensAfterMinting = await actorOfAlice.getTokens();
     const tokenNumberAfterMinting = tokensAfterMinting.length;
     expect(tokenNumberBeforeMinting + 1).toBe(tokenNumberAfterMinting);
@@ -91,11 +102,110 @@ describe('Anonymous NFT minting test', () => {
     principal,
   };
 
-  it('Anomymous identity can not mint a NFT.', async () => {
+  it('Anonymous identity can not mint an NFT.', async () => {
     const mintRequest: MintRequest = {
       to: anonymous,
       metadata: [],
     };
     await expect(actorOfAnonymous.mintNFT(mintRequest)).rejects.toThrow();
+  });
+});
+
+describe('NFT transfer test', () => {
+  let tokenIndex: number;
+  let tid: TokenIdentifier;
+
+  beforeAll(async () => {
+    const mintRequest: MintRequest = {
+      to: userAlice,
+      metadata: [],
+    };
+    tokenIndex = await actorOfAlice.mintNFT(mintRequest);
+    tid = generateTokenIdentifier(canisterId, tokenIndex);
+  });
+
+  it("Bob doesn't have NFT whose owner is currently Alice", async () => {
+    const balanceRequest: BalanceRequest = {
+      token: tid,
+      user: userBob,
+    };
+    const res = await actorOfBob.balance(balanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(0),
+    });
+  });
+
+  it("Bob can't transfer NFT whose owner is currently Alice", async () => {
+    const transferRequest: TransferRequest = {
+      from: userAlice,
+      to: userBob,
+      token: tid,
+      amount: BigInt(1),
+      memo: [],
+      notify: false,
+      subaccount: [],
+    };
+    const res = await actorOfBob.transfer(transferRequest);
+    expect(res).toEqual({
+      err: {
+        Unauthorized: expect.anything(),
+      },
+    });
+  });
+
+  it("Alice can't specify the wrong amount when transferring her NFT", async () => {
+    const transferRequest: TransferRequest = {
+      from: userAlice,
+      to: userBob,
+      token: tid,
+      amount: BigInt(2),
+      memo: [],
+      notify: false,
+      subaccount: [],
+    };
+    const res = await actorOfAlice.transfer(transferRequest);
+    expect(res).toEqual({
+      err: {
+        Other: expect.anything(),
+      },
+    });
+  });
+
+  it('Alice can transfer her NFT to Bob', async () => {
+    const transferRequest: TransferRequest = {
+      from: userAlice,
+      to: userBob,
+      token: tid,
+      amount: BigInt(1),
+      memo: [],
+      notify: false,
+      subaccount: [],
+    };
+    const res = await actorOfAlice.transfer(transferRequest);
+    expect(res).toEqual({
+      ok: BigInt(1),
+    });
+  });
+
+  it('Now Bob owns NFT transferred by Alice', async () => {
+    const balanceRequest: BalanceRequest = {
+      token: tid,
+      user: userBob,
+    };
+    const res = await actorOfBob.balance(balanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(1),
+    });
+  });
+
+  it("Alice doesn't own the NFT anymore", async () => {
+    const balanceRequest: BalanceRequest = {
+      token: tid,
+      user: userAlice,
+    };
+    const res = await actorOfAlice.balance(balanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(0),
+    });
   });
 });
