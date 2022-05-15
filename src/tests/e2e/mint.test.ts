@@ -1,6 +1,7 @@
 import { Secp256k1KeyIdentity } from '@dfinity/identity';
 import fetch from 'isomorphic-fetch';
 import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
 import { generateTokenIdentifier } from '../../GenerativeArtNFT_assets/src/utils/ext';
 
 declare module '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js' {
@@ -31,6 +32,14 @@ const identityOptionOfAlice = {
   },
 };
 const actorOfAlice = createGenerativeArtNFTActor(identityOptionOfAlice);
+
+const identityOptionOfAnonymous = {
+  agentOptions: {
+    fetch,
+    host: 'http://localhost:8000',
+  },
+};
+const actorOfAnonymous = createGenerativeArtNFTActor(identityOptionOfAnonymous);
 
 describe('NFT minting test', () => {
   let tokenNumberBeforeMinting: number;
@@ -73,5 +82,20 @@ describe('NFT minting test', () => {
     const tokensAfterMinting = await actorOfAlice.getTokens();
     const tokenNumberAfterMinting = tokensAfterMinting.length;
     expect(tokenNumberBeforeMinting + 1).toBe(tokenNumberAfterMinting);
+  });
+});
+
+describe('Anonymous NFT minting test', () => {
+  const principal = Principal.anonymous();
+  const anonymous: User = {
+    principal,
+  };
+
+  it('Anomymous identity can not mint a NFT.', async () => {
+    const mintRequest: MintRequest = {
+      to: anonymous,
+      metadata: [],
+    };
+    await expect(actorOfAnonymous.mintNFT(mintRequest)).rejects.toThrow();
   });
 });
