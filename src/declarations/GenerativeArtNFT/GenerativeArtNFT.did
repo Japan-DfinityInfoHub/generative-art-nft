@@ -75,7 +75,6 @@ type GenerativeArtNFT =
                                TokenIndex;
                                principal;
                              }) query;
-   getMinter: () -> (principal) query;
    getRegistry: () -> (vec record {
                              TokenIndex;
                              AccountIdentifier__1;
@@ -86,7 +85,6 @@ type GenerativeArtNFT =
                          }) query;
    metadata: (TokenIdentifier__1) -> (Result_1) query;
    mintNFT: (MintRequest) -> (TokenIndex);
-   setMinter: (principal) -> ();
    supply: (TokenIdentifier__1) -> (Result) query;
    transfer: (TransferRequest) -> (TransferResponse);
  };
@@ -128,4 +126,4 @@ type AllowanceRequest =
  };
 type AccountIdentifier__1 = text;
 type AccountIdentifier = text;
-service : (principal) -> GenerativeArtNFT
+service : () -> GenerativeArtNFT

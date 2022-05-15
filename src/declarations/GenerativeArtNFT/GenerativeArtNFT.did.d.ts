@@ -31,12 +31,10 @@ export interface GenerativeArtNFT {
   'bearer' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
   'extensions' : () => Promise<Array<Extension>>,
   'getAllowances' : () => Promise<Array<[TokenIndex, Principal]>>,
-  'getMinter' : () => Promise<Principal>,
   'getRegistry' : () => Promise<Array<[TokenIndex, AccountIdentifier__1]>>,
   'getTokens' : () => Promise<Array<[TokenIndex, Metadata]>>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_1>,
   'mintNFT' : (arg_0: MintRequest) => Promise<TokenIndex>,
-  'setMinter' : (arg_0: Principal) => Promise<undefined>,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
 }
