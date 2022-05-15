@@ -1,0 +1,48 @@
+name: Build and run tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      VESSEL_VERSION: 0.6.3
+      DFX_VERSION: 0.9.3
+      NODE_VERSION: 16
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm install -g npm
+      - name: Install npm packages
+        run: |
+          npm install
+      - name: Install dfx/moc/vessel
+        uses:  aviate-labs/setup-dfx@v0.2.3
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
+          install-moc: true
+          vessel-version: ${{ env.VESSEL_VERSION }}
+      - name: Show versions
+        run: |
+          dfx --version
+          moc --version
+          vessel --version
+      - name: Local deploy
+        run: |
+          dfx start --background
+          sh ./scripts/install_local.sh
+      - name: Run e2e tests
+        run: |
+          npm run test
+      - name: Stop dfx
+        run: |
+          dfx stop
