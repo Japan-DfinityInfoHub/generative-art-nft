@@ -92,7 +92,6 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Principal))],
         ['query'],
       ),
-    'getMinter' : IDL.Func([], [IDL.Principal], ['query']),
     'getRegistry' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(TokenIndex, AccountIdentifier__1))],
@@ -105,10 +104,9 @@ export const idlFactory = ({ IDL }) => {
       ),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_1], ['query']),
     'mintNFT' : IDL.Func([MintRequest], [TokenIndex], []),
-    'setMinter' : IDL.Func([IDL.Principal], [], []),
     'supply' : IDL.Func([TokenIdentifier__1], [Result], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
   });
   return GenerativeArtNFT;
 };
-export const init = ({ IDL }) => { return [IDL.Principal]; };
+export const init = ({ IDL }) => { return []; };

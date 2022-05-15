@@ -12,7 +12,7 @@ import ExtCommon "./ext/Common";
 import ExtAllowance "./ext/Allowance";
 import ExtNonFungible "./ext/NonFungible";
 
-shared (install) actor class GenerativeArtNFT(init_minter: Principal) = this {
+shared (install) actor class GenerativeArtNFT() = this {
   
   // Types
   type AccountIdentifier = ExtCore.AccountIdentifier;
@@ -45,7 +45,6 @@ shared (install) actor class GenerativeArtNFT(init_minter: Principal) = this {
   private var _tokenMetadata : HashMap.HashMap<TokenIndex, Metadata> = HashMap.fromIter(_tokenMetadataState.vals(), 0, ExtCore.TokenIndex.equal, ExtCore.TokenIndex.hash);
   
   private stable var _supply : Balance  = 0;
-  private stable var _minter : Principal  = init_minter;
   private stable var _nextTokenId : TokenIndex  = 0;
 
 
@@ -60,14 +59,8 @@ shared (install) actor class GenerativeArtNFT(init_minter: Principal) = this {
     _allowancesState := [];
     _tokenMetadataState := [];
   };
-
-  public shared(msg) func setMinter(minter : Principal) : async () {
-    assert(msg.caller == _minter);
-    _minter := minter;
-  };
   
   public shared(msg) func mintNFT(request : MintRequest) : async TokenIndex {
-    assert(msg.caller == _minter);
     let receiver = ExtCore.User.toAID(request.to);
     let token = _nextTokenId;
     let md : Metadata = #nonfungible({
@@ -139,9 +132,6 @@ shared (install) actor class GenerativeArtNFT(init_minter: Principal) = this {
     };
   };
 
-  public query func getMinter() : async Principal {
-    _minter;
-  };
   public query func extensions() : async [Extension] {
     EXTENSIONS;
   };
