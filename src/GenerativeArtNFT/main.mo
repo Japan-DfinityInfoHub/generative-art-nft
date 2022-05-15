@@ -61,6 +61,7 @@ shared (install) actor class GenerativeArtNFT() = this {
   };
   
   public shared(msg) func mintNFT(request : MintRequest) : async TokenIndex {
+    assert(not Principal.isAnonymous(msg.caller));
     let receiver = ExtCore.User.toAID(request.to);
     let token = _nextTokenId;
     let md : Metadata = #nonfungible({
