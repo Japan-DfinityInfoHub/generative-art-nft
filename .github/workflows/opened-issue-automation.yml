@@ -1,0 +1,18 @@
+name: Add new issues to the NFT-barter project
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  issue-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: leonsteinhaeuser/project-beta-automations@v1.2.1
+        with:
+          gh_token: ${{ secrets.GHPROJECT_TOKEN }}
+          organization: Japan-DfinityInfoHub
+          project_id: 1 # NFT-barter
+          resource_node_id: ${{ github.event.issue.node_id }}
+          status_value: Todo
