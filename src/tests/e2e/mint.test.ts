@@ -2,16 +2,22 @@ import { Secp256k1KeyIdentity } from '@dfinity/identity';
 import fetch from 'isomorphic-fetch';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { generateTokenIdentifier } from '../../GenerativeArtNFT_assets/src/utils/ext';
+import {
+  generateTokenIdentifier,
+  getSubAccount,
+} from '../../GenerativeArtNFT_assets/src/utils/ext';
 
 declare module '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js' {
   function idlFactory(): IDL.ServiceClass;
 }
 import {
   User,
+  SubAccount,
   MintRequest,
   BalanceRequest,
   TransferRequest,
+  ApproveRequest,
+  AllowanceRequest,
   TokenIdentifier,
   _SERVICE as GenerativeArtNFT,
   idlFactory,
@@ -182,6 +188,109 @@ describe('NFT transfer test', () => {
       subaccount: [],
     };
     const res = await actorOfAlice.transfer(transferRequest);
+    expect(res).toEqual({
+      ok: BigInt(1),
+    });
+  });
+
+  it('Now Bob owns NFT transferred by Alice', async () => {
+    const balanceRequest: BalanceRequest = {
+      token: tid,
+      user: userBob,
+    };
+    const res = await actorOfBob.balance(balanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(1),
+    });
+  });
+
+  it("Alice doesn't own the NFT anymore", async () => {
+    const balanceRequest: BalanceRequest = {
+      token: tid,
+      user: userAlice,
+    };
+    const res = await actorOfAlice.balance(balanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(0),
+    });
+  });
+});
+
+describe('Tests for approval methods', () => {
+  let tokenIndex: number;
+  let tid: TokenIdentifier;
+  const accountIndex = 0;
+
+  beforeAll(async () => {
+    const mintRequest: MintRequest = {
+      to: userAlice,
+      metadata: [],
+    };
+    tokenIndex = await actorOfAlice.mintNFT(mintRequest);
+    tid = generateTokenIdentifier(canisterId, tokenIndex);
+  });
+
+  it("Bob doesn't have an allowance yet", async () => {
+    const allowanceRequest: AllowanceRequest = {
+      token: tid,
+      owner: userAlice,
+      spender: userBob.principal,
+    };
+    const res = await actorOfAlice.allowance(allowanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(0),
+    });
+  });
+
+  it('The allowance method returns an error when specifying an invalid owner', async () => {
+    const allowanceRequest: AllowanceRequest = {
+      token: tid,
+      owner: userBob,
+      spender: userBob.principal,
+    };
+    const res = await actorOfAlice.allowance(allowanceRequest);
+    expect(res).toEqual({
+      err: {
+        Other: expect.anything(),
+      },
+    });
+  });
+
+  it('Alice can give approval to Bob', async () => {
+    const subaccountOfAlice: SubAccount = getSubAccount(accountIndex);
+    const approveRequest: ApproveRequest = {
+      token: tid,
+      subaccount: [subaccountOfAlice],
+      allowance: BigInt(1),
+      spender: userBob.principal,
+    };
+    // We don't check the response from `approve` function
+    // because it returns nothing regardless of the success
+    await actorOfAlice.approve(approveRequest);
+
+    const allowanceRequest: AllowanceRequest = {
+      token: tid,
+      owner: userAlice,
+      spender: userBob.principal,
+    };
+    const res = await actorOfAlice.allowance(allowanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(1),
+    });
+  });
+
+  it("Bob can transfer Alice's NFT", async () => {
+    const subaccountOfBob: SubAccount = getSubAccount(accountIndex);
+    const transferRequest: TransferRequest = {
+      from: userAlice,
+      to: userBob,
+      token: tid,
+      amount: BigInt(1),
+      memo: [],
+      notify: false,
+      subaccount: [subaccountOfBob],
+    };
+    const res = await actorOfBob.transfer(transferRequest);
     expect(res).toEqual({
       ok: BigInt(1),
     });

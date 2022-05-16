@@ -13,6 +13,10 @@ export const generateTokenIdentifier = (
   return Principal.fromUint8Array(array).toText();
 };
 
+export const getSubAccount = (index: number): number[] => {
+  return Array(28).fill(0).concat(numberTo32bits(index));
+};
+
 const numberTo32bits = (num: number) => {
   let b = new ArrayBuffer(4);
   new DataView(b).setUint32(0, num);
