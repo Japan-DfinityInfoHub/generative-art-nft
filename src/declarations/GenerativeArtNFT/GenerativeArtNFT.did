@@ -62,6 +62,24 @@ type Metadata =
    nonfungible: record {metadata: opt blob;};
  };
 type Memo = blob;
+type HttpResponse = 
+ record {
+   body: blob;
+   headers: vec HeaderField;
+   status_code: nat16;
+ };
+type HttpRequest = 
+ record {
+   body: blob;
+   headers: vec HeaderField;
+   method: text;
+   url: text;
+ };
+type HeaderField = 
+ record {
+   text;
+   text;
+ };
 type GenerativeArtNFT = 
  service {
    acceptCycles: () -> ();
@@ -83,6 +101,7 @@ type GenerativeArtNFT =
                            TokenIndex;
                            Metadata;
                          }) query;
+   http_request: (HttpRequest) -> (HttpResponse) query;
    metadata: (TokenIdentifier__1) -> (Result_1) query;
    mintNFT: (MintRequest) -> (TokenIndex);
    supply: (TokenIdentifier__1) -> (Result) query;

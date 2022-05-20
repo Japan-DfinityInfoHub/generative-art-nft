@@ -3,14 +3,18 @@ GenerativeArtNFT
 */
 import Cycles "mo:base/ExperimentalCycles";
 import HashMap "mo:base/HashMap";
+import List "mo:base/List";
+import Nat32 "mo:base/Nat32";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
+import Text "mo:base/Text";
 import Iter "mo:base/Iter";
 import AID "./util/AccountIdentifier";
 import ExtCore "./ext/Core";
 import ExtCommon "./ext/Common";
 import ExtAllowance "./ext/Allowance";
 import ExtNonFungible "./ext/NonFungible";
+import Http "./Http";
 
 shared (install) actor class GenerativeArtNFT() = this {
   
@@ -31,6 +35,8 @@ shared (install) actor class GenerativeArtNFT() = this {
   type ApproveRequest = ExtAllowance.ApproveRequest;
   type Metadata = ExtCommon.Metadata;
   type MintRequest  = ExtNonFungible.MintRequest ;
+  type HttpRequest = Http.HttpRequest;
+  type HttpResponse = Http.HttpResponse;
   
   private let EXTENSIONS : [Extension] = ["@ext/common", "@ext/allowance", "@ext/nonfungible"];
   
@@ -231,6 +237,50 @@ shared (install) actor class GenerativeArtNFT() = this {
     };
   };
   
+  public query func http_request(req: HttpRequest): async HttpResponse {
+    let path = Http.removeQuery(req.url);
+    if (path == "/") {
+      let queryParameters = Http.queryParameters(req.url);
+      return switch (List.find<Http.Query>(queryParameters, func (q) { q.key == "tokenid" })) {
+        case null {
+          {
+            body = Text.encodeUtf8("Generative Art NFT");
+            headers = [];
+            status_code = 200;
+            streaming_strategy = null;
+          }
+        };
+        case (?q) {
+          
+          let tokenIdentifierText = q.value;
+          if (ExtCore.TokenIdentifier.isPrincipal(tokenIdentifierText, Principal.fromActor(this)) == false) {
+            return {
+              body = Text.encodeUtf8("Invalid token " # tokenIdentifierText);
+              headers = [];
+              status_code = 404;
+              streaming_strategy = null;
+            };
+          };
+
+          let tokenIndex = ExtCore.TokenIdentifier.getIndex(tokenIdentifierText);
+
+          return {
+            body = Text.encodeUtf8("Token index is " # Nat32.toText(tokenIndex));
+            headers = [];
+            status_code = 200;
+            streaming_strategy = null;
+          }
+        };
+      };
+    };
+    return {
+      body = Text.encodeUtf8("404 Not found :" # path);
+      headers = [];
+      status_code = 404;
+      streaming_strategy = null;
+    };
+  };
+
   //Internal cycle management - good general case
   public func acceptCycles() : async () {
     let available = Cycles.available();

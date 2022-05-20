@@ -33,10 +33,23 @@ export interface GenerativeArtNFT {
   'getAllowances' : () => Promise<Array<[TokenIndex, Principal]>>,
   'getRegistry' : () => Promise<Array<[TokenIndex, AccountIdentifier__1]>>,
   'getTokens' : () => Promise<Array<[TokenIndex, Metadata]>>,
+  'http_request' : (arg_0: HttpRequest) => Promise<HttpResponse>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_1>,
   'mintNFT' : (arg_0: MintRequest) => Promise<TokenIndex>,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
+}
+export type HeaderField = [string, string];
+export interface HttpRequest {
+  'url' : string,
+  'method' : string,
+  'body' : Array<number>,
+  'headers' : Array<HeaderField>,
+}
+export interface HttpResponse {
+  'body' : Array<number>,
+  'headers' : Array<HeaderField>,
+  'status_code' : number,
 }
 export type Memo = Array<number>;
 export type Metadata = {

@@ -53,6 +53,18 @@ export const idlFactory = ({ IDL }) => {
     }),
     'nonfungible' : IDL.Record({ 'metadata' : IDL.Opt(IDL.Vec(IDL.Nat8)) }),
   });
+  const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
+  const HttpRequest = IDL.Record({
+    'url' : IDL.Text,
+    'method' : IDL.Text,
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(HeaderField),
+  });
+  const HttpResponse = IDL.Record({
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(HeaderField),
+    'status_code' : IDL.Nat16,
+  });
   const Result_1 = IDL.Variant({ 'ok' : Metadata, 'err' : CommonError });
   const MintRequest = IDL.Record({
     'to' : User,
@@ -102,6 +114,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(TokenIndex, Metadata))],
         ['query'],
       ),
+    'http_request' : IDL.Func([HttpRequest], [HttpResponse], ['query']),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_1], ['query']),
     'mintNFT' : IDL.Func([MintRequest], [TokenIndex], []),
     'supply' : IDL.Func([TokenIdentifier__1], [Result], ['query']),
