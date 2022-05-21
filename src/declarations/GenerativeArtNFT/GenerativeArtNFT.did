@@ -30,15 +30,20 @@ type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type SubAccount = vec nat8;
-type Result_2 = 
+type Result_3 = 
  variant {
    err: CommonError;
    ok: AccountIdentifier__1;
  };
-type Result_1 = 
+type Result_2 = 
  variant {
    err: CommonError;
    ok: Metadata;
+ };
+type Result_1 = 
+ variant {
+   err: CommonError;
+   ok;
  };
 type Result = 
  variant {
@@ -87,7 +92,7 @@ type GenerativeArtNFT =
    approve: (ApproveRequest) -> ();
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
-   bearer: (TokenIdentifier__1) -> (Result_2) query;
+   bearer: (TokenIdentifier__1) -> (Result_3) query;
    extensions: () -> (vec Extension) query;
    getAllowances: () -> (vec record {
                                TokenIndex;
@@ -97,13 +102,18 @@ type GenerativeArtNFT =
                              TokenIndex;
                              AccountIdentifier__1;
                            }) query;
+   getTokenImages: () -> (vec record {
+                                TokenIndex;
+                                blob;
+                              }) query;
    getTokens: () -> (vec record {
                            TokenIndex;
                            Metadata;
                          }) query;
    http_request: (HttpRequest) -> (HttpResponse) query;
-   metadata: (TokenIdentifier__1) -> (Result_1) query;
+   metadata: (TokenIdentifier__1) -> (Result_2) query;
    mintNFT: (MintRequest) -> (TokenIndex);
+   setTokenImage: (TokenIndex, text) -> (Result_1);
    supply: (TokenIdentifier__1) -> (Result) query;
    transfer: (TransferRequest) -> (TransferResponse);
  };

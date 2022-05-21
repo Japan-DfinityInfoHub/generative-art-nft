@@ -28,14 +28,16 @@ export interface GenerativeArtNFT {
   'approve' : (arg_0: ApproveRequest) => Promise<undefined>,
   'availableCycles' : () => Promise<bigint>,
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
-  'bearer' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
+  'bearer' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
   'extensions' : () => Promise<Array<Extension>>,
   'getAllowances' : () => Promise<Array<[TokenIndex, Principal]>>,
   'getRegistry' : () => Promise<Array<[TokenIndex, AccountIdentifier__1]>>,
+  'getTokenImages' : () => Promise<Array<[TokenIndex, Array<number>]>>,
   'getTokens' : () => Promise<Array<[TokenIndex, Metadata]>>,
   'http_request' : (arg_0: HttpRequest) => Promise<HttpResponse>,
-  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_1>,
+  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
   'mintNFT' : (arg_0: MintRequest) => Promise<TokenIndex>,
+  'setTokenImage' : (arg_0: TokenIndex, arg_1: string) => Promise<Result_1>,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
 }
@@ -64,9 +66,11 @@ export type Metadata = {
 export interface MintRequest { 'to' : User, 'metadata' : [] | [Array<number>] }
 export type Result = { 'ok' : Balance__1 } |
   { 'err' : CommonError };
-export type Result_1 = { 'ok' : Metadata } |
+export type Result_1 = { 'ok' : null } |
   { 'err' : CommonError };
-export type Result_2 = { 'ok' : AccountIdentifier__1 } |
+export type Result_2 = { 'ok' : Metadata } |
+  { 'err' : CommonError };
+export type Result_3 = { 'ok' : AccountIdentifier__1 } |
   { 'err' : CommonError };
 export type SubAccount = Array<number>;
 export type TokenIdentifier = string;

@@ -25,7 +25,7 @@ describe('Http call', () => {
     expect(text).toBe(`Invalid token ${wrongTokenId}`);
   });
 
-  it('Return token index when specifying a correct token id', async () => {
+  it('Return token image when specifying a correct token id', async () => {
     const tokenIndex = 1;
     const correctTokenId = generateTokenIdentifier(canisterId, tokenIndex);
     const res = await fetch(
@@ -33,10 +33,10 @@ describe('Http call', () => {
     );
     const text = await res.text();
     expect(res.status).toBe(200);
-    expect(text).toBe(`Token index is ${tokenIndex}`);
+    expect(res.headers.get('Content-Type')).toBe('image/png');
   });
 
-  it('Return token index even if an additional dummy query is specified', async () => {
+  it('Return token image even if an additional dummy query is specified', async () => {
     const tokenIndex = 1;
     const correctTokenId = generateTokenIdentifier(canisterId, tokenIndex);
     const res = await fetch(
@@ -44,6 +44,6 @@ describe('Http call', () => {
     );
     const text = await res.text();
     expect(res.status).toBe(200);
-    expect(text).toBe(`Token index is ${tokenIndex}`);
+    expect(res.headers.get('Content-Type')).toBe('image/png');
   });
 });

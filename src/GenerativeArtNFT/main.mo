@@ -39,7 +39,8 @@ shared (install) actor class GenerativeArtNFT() = this {
   type HttpResponse = Http.HttpResponse;
   
   private let EXTENSIONS : [Extension] = ["@ext/common", "@ext/allowance", "@ext/nonfungible"];
-  
+  private let installer : Principal = install.caller;
+
   //State work
   private stable var _registryState : [(TokenIndex, AccountIdentifier)] = [];
   private var _registry : HashMap.HashMap<TokenIndex, AccountIdentifier> = HashMap.fromIter(_registryState.vals(), 0, ExtCore.TokenIndex.equal, ExtCore.TokenIndex.hash);
@@ -50,6 +51,9 @@ shared (install) actor class GenerativeArtNFT() = this {
   private stable var _tokenMetadataState : [(TokenIndex, Metadata)] = [];
   private var _tokenMetadata : HashMap.HashMap<TokenIndex, Metadata> = HashMap.fromIter(_tokenMetadataState.vals(), 0, ExtCore.TokenIndex.equal, ExtCore.TokenIndex.hash);
   
+  private stable var _tokenImageState : [(TokenIndex, Blob)] = [];
+  private var _tokenImage : HashMap.HashMap<TokenIndex, Blob> = HashMap.fromIter(_tokenImageState.vals(), 0, ExtCore.TokenIndex.equal, ExtCore.TokenIndex.hash);
+  
   private stable var _supply : Balance  = 0;
   private stable var _nextTokenId : TokenIndex  = 0;
 
@@ -59,11 +63,13 @@ shared (install) actor class GenerativeArtNFT() = this {
     _registryState := Iter.toArray(_registry.entries());
     _allowancesState := Iter.toArray(_allowances.entries());
     _tokenMetadataState := Iter.toArray(_tokenMetadata.entries());
+    _tokenImageState := Iter.toArray(_tokenImage.entries());
   };
   system func postupgrade() {
     _registryState := [];
     _allowancesState := [];
     _tokenMetadataState := [];
+    _tokenImageState := [];
   };
   
   public shared(msg) func mintNFT(request : MintRequest) : async TokenIndex {
@@ -221,6 +227,9 @@ shared (install) actor class GenerativeArtNFT() = this {
   public query func getTokens() : async [(TokenIndex, Metadata)] {
     Iter.toArray(_tokenMetadata.entries());
   };
+  public query func getTokenImages() : async [(TokenIndex, Blob)] {
+    Iter.toArray(_tokenImage.entries());
+  };
   
   public query func metadata(token : TokenIdentifier) : async Result.Result<Metadata, CommonError> {
     if (ExtCore.TokenIdentifier.isPrincipal(token, Principal.fromActor(this)) == false) {
@@ -237,6 +246,14 @@ shared (install) actor class GenerativeArtNFT() = this {
     };
   };
   
+  public shared({caller}) func setTokenImage(tokenIndex : TokenIndex, imageBase64 : Text) : async Result.Result<(), CommonError> {
+    if (caller != installer) {
+      return #err(#Other("Authentication error"))
+    };
+    _tokenImage.put(tokenIndex, Text.encodeUtf8(imageBase64));
+    #ok
+  };
+
   public query func http_request(req: HttpRequest): async HttpResponse {
     let path = Http.removeQuery(req.url);
     if (path == "/") {
@@ -251,7 +268,6 @@ shared (install) actor class GenerativeArtNFT() = this {
           }
         };
         case (?q) {
-          
           let tokenIdentifierText = q.value;
           if (ExtCore.TokenIdentifier.isPrincipal(tokenIdentifierText, Principal.fromActor(this)) == false) {
             return {
@@ -263,13 +279,14 @@ shared (install) actor class GenerativeArtNFT() = this {
           };
 
           let tokenIndex = ExtCore.TokenIdentifier.getIndex(tokenIdentifierText);
+          let tokenImage = _image(tokenIndex);
 
           return {
-            body = Text.encodeUtf8("Token index is " # Nat32.toText(tokenIndex));
-            headers = [];
+            body = tokenImage;
+            headers = [("content-type", "image/png")];
             status_code = 200;
             streaming_strategy = null;
-          }
+          };
         };
       };
     };
@@ -279,6 +296,19 @@ shared (install) actor class GenerativeArtNFT() = this {
       status_code = 404;
       streaming_strategy = null;
     };
+  };
+
+  func _image(tokenIndex: TokenIndex) : Blob {
+    let fallbackPixelText = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+    switch (_tokenImage.get(tokenIndex)) {
+      case (?tokenImage) {
+        tokenImage
+      };
+      case (_) {
+        Text.encodeUtf8(fallbackPixelText)
+      };
+    }
   };
 
   //Internal cycle management - good general case
