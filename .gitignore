@@ -22,3 +22,6 @@ dist/
 
 # vessel
 .vessel/
+
+# Wasm files generated in Motoko testings
+_wasm_out/
