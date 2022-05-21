@@ -102,6 +102,39 @@ describe('NFT minting test', () => {
   });
 });
 
+describe('NFT minting to others', () => {
+  let tokenNumberBeforeMinting: number;
+
+  beforeAll(async () => {
+    const tokensBeforeMinting = await actorOfAlice.getTokens();
+    tokenNumberBeforeMinting = tokensBeforeMinting.length;
+  });
+
+  it('Alice can mint an NFT to Bob', async () => {
+    const mintRequest: MintRequest = {
+      to: userBob,
+      metadata: [],
+    };
+    const tokenIndex = await actorOfAlice.mintNFT(mintRequest);
+    expect(tokenIndex).toBe(tokenNumberBeforeMinting);
+  });
+
+  it('Bob got the NFT', async () => {
+    const tid: TokenIdentifier = generateTokenIdentifier(
+      canisterId,
+      tokenNumberBeforeMinting
+    );
+    const balanceRequest: BalanceRequest = {
+      token: tid,
+      user: userBob,
+    };
+    const res = await actorOfBob.balance(balanceRequest);
+    expect(res).toStrictEqual({
+      ok: BigInt(1),
+    });
+  });
+});
+
 describe('Anonymous NFT minting test', () => {
   const principal = Principal.anonymous();
   const anonymous: User = {
