@@ -19,3 +19,6 @@ dist/
 
 # declarations: .old.did files
 *.old.did
+
+# vessel
+.vessel/
