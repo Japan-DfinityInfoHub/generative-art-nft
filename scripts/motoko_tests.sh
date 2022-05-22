@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Motoko module test script
-# Write your Motoko tests in MOTOKO_TEST_DIR (see below) with file name: *.test.mo
+# Write your Motoko tests with file name: *.test.mo
 
 set -eu
 
-MOTOKO_TEST_DIR=src/GenerativeArtNFT/tests
+MOTOKO_TEST_DIR=src/GenerativeArtNFT
 WASM_OUTDIR=_wasm_out
 
 rm -rf ${WASM_OUTDIR}

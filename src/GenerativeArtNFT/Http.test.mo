@@ -1,6 +1,6 @@
 import Debug "mo:base/Debug";
 import List "mo:base/List";
-import Http "../Http";
+import Http "./Http";
 
 Debug.print("Module Test: Http");
 
