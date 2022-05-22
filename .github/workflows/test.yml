@@ -13,6 +13,7 @@ jobs:
     env:
       VESSEL_VERSION: 0.6.3
       DFX_VERSION: 0.9.3
+      WASMTIME_VERSION: 0.37.0
       NODE_VERSION: 16
 
     steps:
@@ -31,11 +32,23 @@ jobs:
           dfx-version: ${{ env.DFX_VERSION }}
           install-moc: true
           vessel-version: ${{ env.VESSEL_VERSION }}
+      - name: Install wasmtime
+        uses: mwilliamson/setup-wasmtime-action@v1
+        with:
+          wasmtime-version: ${{ env.WASMTIME_VERSION }}
       - name: Show versions
         run: |
           dfx --version
           moc --version
           vessel --version
+          wasmtime --version
+      - name: Motoko type checking
+        continue-on-error: true # Because Error raises in the EXT library
+        run: |
+          ./scripts/motoko_type_check.sh
+      - name: Motoko unit tests
+        run: |
+          ./scripts/motoko_tests.sh
       - name: Local deploy
         run: |
           dfx start --background
