@@ -2,7 +2,6 @@
 GenerativeArtNFT
 */
 import Cycles "mo:base/ExperimentalCycles";
-import Debug "mo:base/Debug";
 import HashMap "mo:base/HashMap";
 import List "mo:base/List";
 import Nat32 "mo:base/Nat32";

@@ -1,11 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import fetch from 'isomorphic-fetch';
 import { IDL } from '@dfinity/candid';
 import fs from 'fs';
-import { generateTokenIdentifier } from '../../GenerativeArtNFT_assets/src/utils/ext';
 
 declare module '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js' {
   function idlFactory(): IDL.ServiceClass;
@@ -15,6 +10,7 @@ import {
   idlFactory,
 } from '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js';
 import { curriedCreateActor } from '../../GenerativeArtNFT_assets/src/utils/createActor';
+import { generateTokenIdentifier } from '../../GenerativeArtNFT_assets/src/utils/ext';
 import localCanisterIds from '../../../.dfx/local/canister_ids.json';
 const canisterId = localCanisterIds.GenerativeArtNFT.local;
 import { parseIdentity } from './utils/identity';
@@ -80,7 +76,6 @@ describe('Http call', () => {
   it('Return token image even if an additional dummy query is specified', async () => {
     const tokenIndex = 1;
     const correctTokenId = generateTokenIdentifier(canisterId, tokenIndex);
-    console.log(correctTokenId);
     const res = await fetch(
       `http://localhost:8000?canisterId=${canisterId}&tokenid=${correctTokenId}&dummy=1`
     );
