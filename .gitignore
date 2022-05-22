@@ -20,3 +20,9 @@ dist/
 
 # declarations: .old.did files
 *.old.did
+
+# vessel
+.vessel/
+
+# Wasm files generated in Motoko testings
+_wasm_out/
