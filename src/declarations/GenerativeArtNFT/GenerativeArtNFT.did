@@ -43,12 +43,12 @@ type Result_2 =
 type Result_1 = 
  variant {
    err: CommonError;
-   ok;
+   ok: Balance__1;
  };
 type Result = 
  variant {
    err: CommonError;
-   ok: Balance__1;
+   ok;
  };
 type MintRequest = 
  record {
@@ -88,7 +88,7 @@ type HeaderField =
 type GenerativeArtNFT = 
  service {
    acceptCycles: () -> ();
-   allowance: (AllowanceRequest) -> (Result) query;
+   allowance: (AllowanceRequest) -> (Result_1) query;
    approve: (ApproveRequest) -> ();
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
@@ -98,6 +98,7 @@ type GenerativeArtNFT =
                                TokenIndex;
                                principal;
                              }) query;
+   getInstaller: () -> (text);
    getRegistry: () -> (vec record {
                              TokenIndex;
                              AccountIdentifier__1;
@@ -113,9 +114,10 @@ type GenerativeArtNFT =
    http_request: (HttpRequest) -> (HttpResponse) query;
    metadata: (TokenIdentifier__1) -> (Result_2) query;
    mintNFT: (MintRequest) -> (TokenIndex);
-   setTokenImage: (TokenIndex, text) -> (Result_1);
-   supply: (TokenIdentifier__1) -> (Result) query;
+   setTokenImage: (TokenIndex, text) -> (Result);
+   supply: (TokenIdentifier__1) -> (Result_1) query;
    transfer: (TransferRequest) -> (TransferResponse);
+   updateTokenImageSetter: (principal) -> (Result);
  };
 type Extension = text;
 type CommonError__1 = 

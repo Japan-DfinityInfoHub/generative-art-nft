@@ -15,7 +15,7 @@ export const idlFactory = ({ IDL }) => {
     'InvalidToken' : TokenIdentifier,
     'Other' : IDL.Text,
   });
-  const Result = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
+  const Result_1 = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
   const SubAccount = IDL.Vec(IDL.Nat8);
   const Balance = IDL.Nat;
   const ApproveRequest = IDL.Record({
@@ -70,7 +70,7 @@ export const idlFactory = ({ IDL }) => {
     'to' : User,
     'metadata' : IDL.Opt(IDL.Vec(IDL.Nat8)),
   });
-  const Result_1 = IDL.Variant({ 'ok' : IDL.Null, 'err' : CommonError });
+  const Result = IDL.Variant({ 'ok' : IDL.Null, 'err' : CommonError });
   const Memo = IDL.Vec(IDL.Nat8);
   const TransferRequest = IDL.Record({
     'to' : User,
@@ -94,7 +94,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const GenerativeArtNFT = IDL.Service({
     'acceptCycles' : IDL.Func([], [], []),
-    'allowance' : IDL.Func([AllowanceRequest], [Result], ['query']),
+    'allowance' : IDL.Func([AllowanceRequest], [Result_1], ['query']),
     'approve' : IDL.Func([ApproveRequest], [], []),
     'availableCycles' : IDL.Func([], [IDL.Nat], ['query']),
     'balance' : IDL.Func([BalanceRequest], [BalanceResponse], ['query']),
@@ -105,6 +105,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Principal))],
         ['query'],
       ),
+    'getInstaller' : IDL.Func([], [IDL.Text], []),
     'getRegistry' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(TokenIndex, AccountIdentifier__1))],
@@ -123,9 +124,10 @@ export const idlFactory = ({ IDL }) => {
     'http_request' : IDL.Func([HttpRequest], [HttpResponse], ['query']),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_2], ['query']),
     'mintNFT' : IDL.Func([MintRequest], [TokenIndex], []),
-    'setTokenImage' : IDL.Func([TokenIndex, IDL.Text], [Result_1], []),
-    'supply' : IDL.Func([TokenIdentifier__1], [Result], ['query']),
+    'setTokenImage' : IDL.Func([TokenIndex, IDL.Text], [Result], []),
+    'supply' : IDL.Func([TokenIdentifier__1], [Result_1], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
+    'updateTokenImageSetter' : IDL.Func([IDL.Principal], [Result], []),
   });
   return GenerativeArtNFT;
 };
