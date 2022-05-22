@@ -3,19 +3,6 @@
     "GenerativeArtNFT": {
       "main": "src/GenerativeArtNFT/main.mo",
       "type": "motoko"
-    },
-    "GenerativeArtNFT_assets": {
-      "dependencies": [
-        "GenerativeArtNFT"
-      ],
-      "frontend": {
-        "entrypoint": "src/GenerativeArtNFT_assets/src/index.html"
-      },
-      "source": [
-        "src/GenerativeArtNFT_assets/assets",
-        "dist/GenerativeArtNFT_assets/"
-      ],
-      "type": "assets"
     }
   },
   "defaults": {

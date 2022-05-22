@@ -2,10 +2,7 @@ import { Secp256k1KeyIdentity } from '@dfinity/identity';
 import fetch from 'isomorphic-fetch';
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import {
-  generateTokenIdentifier,
-  getSubAccount,
-} from '../../GenerativeArtNFT_assets/src/utils/ext';
+import { generateTokenIdentifier, getSubAccount } from './utils/ext';
 
 declare module '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js' {
   function idlFactory(): IDL.ServiceClass;
@@ -22,7 +19,7 @@ import {
   _SERVICE as GenerativeArtNFT,
   idlFactory,
 } from '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js';
-import { curriedCreateActor } from '../../GenerativeArtNFT_assets/src/utils/createActor';
+import { curriedCreateActor } from './utils/createActor';
 import localCanisterIds from '../../../.dfx/local/canister_ids.json';
 const canisterId = localCanisterIds.GenerativeArtNFT.local;
 

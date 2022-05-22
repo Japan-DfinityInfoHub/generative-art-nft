@@ -9,8 +9,8 @@ import {
   _SERVICE as GenerativeArtNFT,
   idlFactory,
 } from '../../declarations/GenerativeArtNFT/GenerativeArtNFT.did.js';
-import { curriedCreateActor } from '../../GenerativeArtNFT_assets/src/utils/createActor';
-import { generateTokenIdentifier } from '../../GenerativeArtNFT_assets/src/utils/ext';
+import { curriedCreateActor } from './utils/createActor';
+import { generateTokenIdentifier } from './utils/ext';
 import localCanisterIds from '../../../.dfx/local/canister_ids.json';
 const canisterId = localCanisterIds.GenerativeArtNFT.local;
 import { parseIdentity } from './utils/identity';
