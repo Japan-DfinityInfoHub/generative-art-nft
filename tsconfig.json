@@ -10,7 +10,8 @@
     "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "module": "ES2022"
   },
   "include": ["src/**/*"],
   "exclude": ["src/tests/**/*"]
