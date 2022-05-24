@@ -1,0 +1,16 @@
+{
+  "name": "artgenerator",
+  "version": "1.0.0",
+  "description": "Generate art images.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate:images": "npx ts-node-esm src/main.ts 1 2"
+  },
+  "devDependencies": {
+    "@types/md5": "^2.3.2",
+    "md5": "^2.3.0",
+    "node-p5": "^1.0.4",
+    "ts-node": "^10.8.0"
+  }
+}
