@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate:images": "npx ts-node-esm src/main.ts 1 1001"
+    "generate:images": "npx ts-node-esm src/main.ts ${npm_config_start} ${npm_config_end}"
   },
   "devDependencies": {
     "@types/md5": "^2.3.2",
