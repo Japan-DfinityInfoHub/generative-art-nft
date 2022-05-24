@@ -2,37 +2,41 @@ import p5 from 'node-p5';
 import md5 from 'md5';
 
 // Generate and Save the generative art as a png image
-const sketch = (tokenIndex: number, imagesSaveDir: string) => {
+const sketch = (startIndex: number, endIndex: number, imagesSaveDir: string) => {
 
   // @ts-expect-error: Because node-p5 doesn't support typescript
   return (p) => {
-    const tokenIndexStr = String(tokenIndex)
+    let index = startIndex;
 
-    const hashedNftSeed = md5(tokenIndexStr)
-    const getSlicedNum = (x: number, y: number) : number => {
-      return parseInt(hashedNftSeed.slice(x, y), 16)
-    }
+    p.draw = () => {
+      p.clear();
 
-    const lineLengthSeed = getSlicedNum(0, 2) + 1; // 1~257
+      const tokenIndexStr = String(index)
 
-    const strokeColorV1 = getSlicedNum(2, 4); // 0~255
-    const strokeColorV2 = getSlicedNum(4, 6); // 0~255
-    const strokeColorV3 = getSlicedNum(6, 8); // 0~255
+      const hashedNftSeed = md5(tokenIndexStr)
+      const getSlicedNum = (x: number, y: number) : number => {
+        return parseInt(hashedNftSeed.slice(x, y), 16)
+      }
+  
+      const lineLengthSeed = getSlicedNum(0, 2) + 1; // 1~257
+  
+      const strokeColorV1 = getSlicedNum(2, 4); // 0~255
+      const strokeColorV2 = getSlicedNum(4, 6); // 0~255
+      const strokeColorV3 = getSlicedNum(6, 8); // 0~255
+  
+      const noiseScale = (getSlicedNum(8, 11) % 1000) / 10000; //0.0001~0.1000
+  
+      const rotateSeed = getSlicedNum(11, 13); // 0~255
+  
+      const backgroundColorV1 = getSlicedNum(15, 17); // 0~255
+      const backgroundColorV2 = getSlicedNum(17, 19); // 0~255
+      const backgroundColorV3 = getSlicedNum(19, 21); // 0~255
+  
+      const drawIterateVal = getSlicedNum(21, 25) + 100000; // 100000~165536
+  
+      const randomSeedVal = getSlicedNum(26, 29); // 0~4096
+      const noiseSeedVal = getSlicedNum(29, 32); // 0~4096
 
-    const noiseScale = (getSlicedNum(8, 11) % 1000) / 10000; //0.0001~0.1000
-
-    const rotateSeed = getSlicedNum(11, 13); // 0~255
-
-    const backgroundColorV1 = getSlicedNum(15, 17); // 0~255
-    const backgroundColorV2 = getSlicedNum(17, 19); // 0~255
-    const backgroundColorV3 = getSlicedNum(19, 21); // 0~255
-
-    const drawIterateVal = getSlicedNum(21, 26) + 100000; // 100000~1000000
-
-    const randomSeedVal = getSlicedNum(26, 29); // 0~4096
-    const noiseSeedVal = getSlicedNum(29, 32); // 0~4096
-
-    p.setup = () => {
       const canvas = p.createCanvas(500, 500);
       p.background(backgroundColorV1, backgroundColorV2, backgroundColorV3, 255);
     
@@ -48,7 +52,7 @@ const sketch = (tokenIndex: number, imagesSaveDir: string) => {
         p.push();
         p.translate(x, y);
         p.rotate(noiseFactor * p.radians(rotateSeed));
-        p.stroke(strokeColorV1, strokeColorV2, strokeColorV3, 3);
+        p.stroke(strokeColorV1, strokeColorV2, strokeColorV3, 6);
         p.strokeWeight(1);
         p.line(0, 0, lineLength, lineLength);
         p.pop();
@@ -58,11 +62,14 @@ const sketch = (tokenIndex: number, imagesSaveDir: string) => {
         console.log(`saved canvas as ${imagesSaveDir}/${tokenIndexStr}.png`);
       }).catch(console.error)
 
-      p.noLoop();
+      index++;
+      if (index > endIndex) {
+        p.noLoop();
+      }
     }
   }
 }
 
-export const genImage = (tokenIndex: number, imagesSaveDir: string) => {
-  p5.createSketch(sketch(tokenIndex, imagesSaveDir));
+export const genImages = (startIndex: number, endIndex: number, imagesSaveDir: string) => {
+  p5.createSketch(sketch(startIndex, endIndex, imagesSaveDir));
 }
