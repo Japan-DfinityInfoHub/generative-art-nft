@@ -13,7 +13,8 @@
     "prestart": "npm run copy:types",
     "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --exclude='*.most' --delete src/declarations",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "upload": "node --experimental-specifier-resolution=node --loader ts-node/esm src/uploadImages/index.ts ${npm_config_start} ${npm_config_end}"
+    "generate:images": "node --experimental-specifier-resolution=node --loader ts-node/esm src/artGenerator/index.ts ${npm_config_start} ${npm_config_end}",
+    "upload:images": "node --experimental-specifier-resolution=node --loader ts-node/esm src/uploadImages/index.ts ${npm_config_start} ${npm_config_end}"
   },
   "devDependencies": {
     "@dfinity/agent": "0.11.1",
@@ -22,6 +23,7 @@
     "@dfinity/principal": "0.11.1",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/jest": "^27.5.1",
+    "@types/md5": "^2.3.2",
     "@types/sha256": "^0.2.0",
     "assert": "2.0.0",
     "buffer": "6.0.3",
@@ -29,6 +31,8 @@
     "isomorphic-fetch": "^3.0.0",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
+    "md5": "^2.3.0",
+    "node-p5": "^1.0.4",
     "process": "0.11.10",
     "sha256": "^0.2.0",
     "stream-browserify": "3.0.0",
