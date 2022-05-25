@@ -13,8 +13,8 @@
     "prestart": "npm run copy:types",
     "copy:types": "rsync -avr .dfx/$(echo ${DFX_NETWORK:-'**'})/canisters/** --exclude='assets/' --exclude='idl/' --exclude='*.wasm' --exclude='*.most' --delete src/declarations",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "generate:images": "node --experimental-specifier-resolution=node --loader ts-node/esm src/artGenerator/src/main.ts ${npm_config_start} ${npm_config_end}",
-    "upload": "node --experimental-specifier-resolution=node --loader ts-node/esm src/uploadImages/index.ts ${npm_config_start} ${npm_config_end}"
+    "generate:images": "node --experimental-specifier-resolution=node --loader ts-node/esm src/artGenerator/index.ts ${npm_config_start} ${npm_config_end}",
+    "upload:images": "node --experimental-specifier-resolution=node --loader ts-node/esm src/uploadImages/index.ts ${npm_config_start} ${npm_config_end}"
   },
   "devDependencies": {
     "@dfinity/agent": "0.11.1",
