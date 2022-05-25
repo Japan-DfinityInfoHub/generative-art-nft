@@ -11,7 +11,10 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "module": "ES2022"
+    "module": "ES2022",
+    "paths": {
+      "node-p5": ["src/artGenerator/src/types/node-p5"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["src/tests/**/*"]
