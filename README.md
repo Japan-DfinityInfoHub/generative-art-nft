@@ -26,10 +26,10 @@ To generate generative art images and upload to the canister:
 # Install required packages
 npm i
 
-# Generate generative arts with token index 1~3
+# Generate generative art images with token index 1~3
 npm run generate:images -start=1 -end=3
 
-# Uplaod images to the canister
+# Uplaod the images to the canister
 ./scripts/update_token_image_setter.sh
 npm run upload:images -start=1 -end=3
 ```
