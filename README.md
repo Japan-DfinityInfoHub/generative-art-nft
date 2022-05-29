@@ -33,7 +33,7 @@ npm run generate:images -start=1 -end=3
 ./scripts/update_token_image_setter.sh
 npm run upload:images -start=1 -end=3
 ```
-You can get outputs as below, click the link to see the art images.
+You can get outputs as below; click the link to see the art images.
 ```bash
 Uploading image No. 1 that is available at http://rrkah-fqaaa-aaaaa-aaaaq-cai.localhost:8000?tokenid=nelid-eakor-uwiaa-aaaaa-aaaaa-eaqca-aaaaa-q ...
 Uploading image No. 2 that is available at http://rrkah-fqaaa-aaaaa-aaaaq-cai.localhost:8000?tokenid=6ap5a-kqkor-uwiaa-aaaaa-aaaaa-eaqca-aaaab-a ...
