@@ -29,7 +29,7 @@ npm i
 # Generate generative art images with token index 1~3
 npm run generate:images -start=1 -end=3
 
-# Uplaod the images to the canister
+# Upload the images to the canister
 ./scripts/update_token_image_setter.sh
 npm run upload:images -start=1 -end=3
 ```
