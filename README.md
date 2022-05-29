@@ -43,7 +43,7 @@ Uploading image No. 3 that is available at http://rrkah-fqaaa-aaaaa-aaaaq-cai.lo
 ## Running tests
 To run tests:
 ```bash
-# Run cansiter e2e tests
+# Run canister e2e tests
 npm run test
 
 # Run Motoko unit tests
