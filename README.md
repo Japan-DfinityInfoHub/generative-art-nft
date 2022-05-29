@@ -21,7 +21,7 @@ dfx start --background --clean
 ./scripts/install_local.sh 
 ```
 
-To generate generative art images and upload to the canister:
+To generate generative art images and upload them to the canister:
 ```bash
 # Install required packages
 npm i
