@@ -42,7 +42,7 @@ export interface GenerativeArtNFT {
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result_1>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
   'updateTokenImageSetter' : (arg_0: Principal) => Promise<Result>,
-  'getTokenIndexOwnedByUser' : (arg_0: User) => Promise<Array<[TokenIndex]>>,
+  'getTokenIndexOwnedByUser' : (arg_0: User) => Promise<Array<TokenIndex>>,
 }
 export type HeaderField = [string, string];
 export interface HttpRequest {

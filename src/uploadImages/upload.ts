@@ -35,15 +35,12 @@ const actorOfImageSetter = createGenerativeArtNFTActor(
   identityOptionOfImageSetter
 );
 
-const range = (start: number, end: number) =>
-  [...Array(end - start + 1)].map((_, idx) => start + idx);
-
 export const upload = async (
   startIndex: number,
   endIndex: number,
   imagesSaveDir: string
 ) => {
-  range(startIndex, endIndex).forEach(async (i: number) => {
+  for (let i = startIndex; i <= endIndex; i++) {
     const tokenid = generateTokenIdentifier(canisterId, i);
 
     console.log(
@@ -56,5 +53,5 @@ export const upload = async (
     if ('err' in res) {
       throw new Error(JSON.stringify(res.err));
     }
-  });
+  }
 };
