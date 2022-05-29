@@ -310,6 +310,21 @@ shared (install) actor class GenerativeArtNFT() = this {
     #ok;
   };
 
+  /*
+    Non-EXT-standard methods
+  */
+
+  public query func getTokenIndexOwnedByUser(user : User) : async [TokenIndex] {
+    let owner = ExtCore.User.toAID(user);
+
+    let filteredRegistry = Iter.filter<(TokenIndex, AccountIdentifier)>(_registry.entries(), func (_, aid) {
+      aid == owner
+    });
+    Iter.toArray(Iter.map<(TokenIndex, AccountIdentifier), TokenIndex>(filteredRegistry, func (tid, _) {
+      tid
+    }))
+  };
+
   func _getSvgString(image: Blob): Text {
     switch (Text.decodeUtf8(image)) {
       case null {

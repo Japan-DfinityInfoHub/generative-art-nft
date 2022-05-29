@@ -128,6 +128,7 @@ export const idlFactory = ({ IDL }) => {
     'supply' : IDL.Func([TokenIdentifier__1], [Result_1], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
     'updateTokenImageSetter' : IDL.Func([IDL.Principal], [Result], []),
+    'getTokenIndexOwnedByUser' : IDL.Func([User], [IDL.Vec(TokenIndex)], ['query']),
   });
   return GenerativeArtNFT;
 };

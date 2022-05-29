@@ -118,6 +118,7 @@ type GenerativeArtNFT =
    supply: (TokenIdentifier__1) -> (Result_1) query;
    transfer: (TransferRequest) -> (TransferResponse);
    updateTokenImageSetter: (principal) -> (Result);
+   getTokenIndexOwnedByUser: (User__1) -> (vec TokenIndex) query;
  };
 type Extension = text;
 type CommonError__1 = 
