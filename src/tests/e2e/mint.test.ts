@@ -93,10 +93,6 @@ describe('NFT minting test', () => {
   });
 
   it('The getTokenIndexOwnedByUser method returns tokenIndex', async () => {
-    const tid: TokenIdentifier = generateTokenIdentifier(
-      canisterId,
-      tokenNumberBeforeMinting
-    );
     const user = userAlice;
     const res = await actorOfAlice.getTokenIndexOwnedByUser(user);
     expect(res).toStrictEqual([tokenNumberBeforeMinting]);
