@@ -6,7 +6,7 @@ set -eu
 
 MOTOKO_DIR=src/GenerativeArtNFT
 
-for i in ${MOTOKO_DIR}/**/*.mo; do
+for i in $(find ${MOTOKO_DIR} -name '*.mo'); do
     echo ==== Run Motoko type check: ${i} ====
     $(dfx cache show)/moc $(vessel sources) --check $i
 done
