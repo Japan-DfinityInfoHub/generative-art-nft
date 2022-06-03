@@ -5,14 +5,14 @@
 
 set -eu
 
-MOTOKO_TEST_DIR=src/GenerativeArtNFT
+MOTOKO_DIR=src/GenerativeArtNFT
 WASM_OUTDIR=_wasm_out
 
 rm -rf ${WASM_OUTDIR}
 mkdir ${WASM_OUTDIR}
 trap "rm -rf ${WASM_OUTDIR}" EXIT
 
-for i in ${MOTOKO_TEST_DIR}/*.test.mo; do
+for i in $(find ${MOTOKO_DIR} -name '*.test.mo'); do
     echo ==== Run Motoko module tests: ${i} ====
     wasm_out_name=${WASM_OUTDIR}/$(basename $i .mo).wasm
     $(dfx cache show)/moc $(vessel sources) -wasi-system-api -o ${wasm_out_name} $i
