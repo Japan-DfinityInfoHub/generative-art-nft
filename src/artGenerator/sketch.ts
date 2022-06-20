@@ -37,7 +37,7 @@ const sketch = (startIndex: number, endIndex: number, imagesSaveDir: string) => 
       const randomSeedVal = getSlicedNum(26, 29); // 0~4096
       const noiseSeedVal = getSlicedNum(29, 32); // 0~4096
 
-      const canvas = p.createCanvas(500, 500);
+      const canvas = p.createCanvas(300, 300);
       p.background(backgroundColorV1, backgroundColorV2, backgroundColorV3, 255);
     
       p.randomSeed(randomSeedVal);
